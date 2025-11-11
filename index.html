@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Xiejelyn ♡</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #e8b4b8;    
+            --secondary: #d8a7b1;  
+            --accent: #b48e8f;     
+            --background: #ffffff;  
+            --card-light: #fdf6f7; 
+            --card-dark: #f9eef0;  
+            --text-primary: #5d415d; 
+            --text-secondary: #8a6d8b; 
+            --border: #f0d8dc;     
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --border-radius: 12px;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            padding: var(--spacing-md);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 10% 20%, rgba(232, 180, 184, 0.05) 0%, transparent 20%),
+                            radial-gradient(circle at 90% 80%, rgba(216, 167, 177, 0.05) 0%, transparent 20%);
+        }
+
+        /* Turtle Canvas */
+        #turtleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Floating Hearts Canvas */
+        #floatingHeartsCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Cake Section */
+        .cake-section {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 3;
+        }
+
+        .cake-section:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .cake {
+            font-size: 12rem;
+            margin-bottom: var(--spacing-md);
+            text-shadow: 0 8px 25px rgba(232, 180, 184, 0.7);
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.5));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(2deg); }
+            50% { transform: translateY(-25px) rotate(0deg); }
+            75% { transform: translateY(-15px) rotate(-2deg); }
+        }
+
+        .cake-message {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 40px;
+            border-radius: 30px;
+            display: inline-block;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Hidden music section */
+        .music-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            position: relative;
+            z-index: 4;
+        }
+
+        .music-section.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        .to-bubble {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(232, 180, 184, 0.3);
+            z-index: 1000;
+            transform: rotate(-2deg);
+            border: 2px solid white;
+        }
+
+        .to-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 30px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--primary);
+        }
+
+        /* FIXED MARQUEE CONTAINER STYLES - PROPER INFINITE LOOP */
+        .row {
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            width: max-content;
+        }
+
+        /* FIXED MARQUEE ANIMATION - PROPER INFINITE LOOP */
+        .marquee-right-to-left {
+            animation: marqueeRightToLeft 120s linear infinite;
+        }
+
+        .marquee-right-to-left:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marqueeRightToLeft {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Different animation speeds for each row */
+        .row:nth-child(1) .cards-container { animation-duration: 120s; }
+        .row:nth-child(2) .cards-container { animation-duration: 140s; }
+        .row:nth-child(3) .cards-container { animation-duration: 160s; }
+        .row:nth-child(4) .cards-container { animation-duration: 180s; }
+
+        .music-card {
+            background: var(--card-light);
+            border-radius: var(--border-radius);
+            width: 300px;
+            min-width: 300px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px rgba(93, 65, 93, 0.08);
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cards-container .music-card {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.3s ease;
+        }
+
+        .cards-container:hover .music-card {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .cards-container .music-card:hover {
+            opacity: 1;
+            transform: scale(1.05);
+            border: 2px dashed var(--primary);
+            box-shadow: 0 8px 24px rgba(232, 180, 184, 0.2);
+            z-index: 10;
+        }
+
+        .card-content {
+            padding: var(--spacing-md);
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-description {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            height: 100%;
+            overflow-y: auto;
+            padding-right: var(--spacing-sm);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+
+        .card-footer {
+            background: var(--card-dark);
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card-footer:hover {
+            background: var(--card-light);
+        }
+
+        .artist-image {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+            border: 2px solid var(--border);
+        }
+
+        .music-card:hover .artist-image {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .song-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .artist-name {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .song-title {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .play-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            z-index: 15;
+            position: relative;
+        }
+
+        .play-icon:hover {
+            transform: scale(1.2);
+            background: var(--secondary);
+        }
+
+        /* SPOTIFY PLAYER MODAL */
+        .spotify-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .spotify-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spotify-player-container {
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(29, 185, 84, 0.4);
+            color: white;
+            position: relative;
+        }
+
+        .spotify-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .spotify-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .song-cover {
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .song-info-modal {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .song-title-modal {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .artist-name-modal {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+
+        .spotify-embed {
+            width: 100%;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 15px;
+            background: #191414;
+        }
+
+        /* Romantic header */
+        .romantic-header {
+            text-align: center;
+            margin: 60px 0 40px 0;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .romantic-header h1 {
+            font-size: 3rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .heart {
+            color: var(--primary);
+            margin: 0 8px;
+        }
+
+        /* Spotify Play Button */
+        .spotify-play-btn {
+            background: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px auto 0;
+        }
+
+        .spotify-play-btn:hover {
+            background: #1ed760;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Static Hearts Canvas -->
+    <canvas id="turtleCanvas"></canvas>
+
+    <!-- Floating Hearts Canvas -->
+    <canvas id="floatingHeartsCanvas"></canvas>
+
+    <!-- Cake Section -->
+    <div class="cake-section" id="cakeSection">
+        <div class="cake">🎂</div>
+        <div class="cake-message">Click the cake to reveal your birthday surprise!</div>
+    </div>
+
+    <!-- Hidden Music Section -->
+    <div class="music-section" id="musicSection">
+        <div class="to-bubble">To: Xie</div>
+
+        <div class="romantic-header">
+            <h1>HAPPY BIRTHDAY <span class="heart">♥</span></h1>
+        </div>
+
+        <!-- Music Rows with Marquee Animation -->
+        <div class="row">
+            <div class="cards-container marquee-right-to-left" id="row1"></div>
+        </div>
+        <div class="row">
+            <div class="cards-container marquee-right-to-left" id="row2"></div>
+        </div>
+        <div class="row">
+            <div class="cards-container marquee-right-to-left" id="row3"></div>
+        </div>
+        <div class="row">
+            <div class="cards-container marquee-right-to-left" id="row4"></div>
+        </div>
+    </div>
+
+    <!-- Spotify Player Modal -->
+    <div class="spotify-modal" id="spotifyModal">
+        <div class="spotify-player-container">
+            <div class="spotify-header">
+                <div class="spotify-logo">
+                    <i class="fab fa-spotify"></i>
+                    <span>For Xie ♡</span>
+                </div>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <img id="modalCover" class="song-cover" src="" alt="Song Cover">
+            
+            <div class="song-info-modal">
+                <div id="modalTitle" class="song-title-modal"></div>
+                <div id="modalArtist" class="artist-name-modal"></div>
+            </div>
+            
+            <!-- Spotify Embed -->
+            <div id="spotifyEmbed" class="spotify-embed"></div>
+            
+            <!-- Open in Spotify Button -->
+            <button class="spotify-play-btn" id="openInSpotify">
+                <i class="fab fa-spotify"></i>
+                Open in Spotify
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Draw HUGE hearts surrounding the cake
+        function drawHearts() {
+            const canvas = document.getElementById('turtleCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            const hearts = [
+                { x: centerX, y: centerY - 100, size: 400, color: '#FF9999', alpha: 0.6 },
+                { x: centerX - 300, y: centerY, size: 350, color: '#FFCCCC', alpha: 0.5 },
+                { x: centerX + 300, y: centerY, size: 350, color: '#FFE6E6', alpha: 0.5 },
+                { x: centerX - 200, y: centerY + 150, size: 300, color: '#FF99CC', alpha: 0.4 },
+                { x: centerX + 200, y: centerY + 150, size: 300, color: '#FFCCFF', alpha: 0.4 },
+                { x: centerX, y: centerY + 50, size: 500, color: '#FF6666', alpha: 0.3 }
+            ];
+
+            let currentHeart = 0;
+
+            function drawNextHeart() {
+                if (currentHeart >= hearts.length) return;
+                
+                const heart = hearts[currentHeart];
+                drawHeart(ctx, heart.x, heart.y, heart.size, heart.color, heart.alpha);
+                currentHeart++;
+                
+                setTimeout(drawNextHeart, 400);
+            }
+
+            drawNextHeart();
+        }
+
+        function drawHeart(ctx, x, y, size, color, alpha = 1) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.globalAlpha = alpha;
+            
+            ctx.beginPath();
+            ctx.scale(size / 100, size / 100);
+            
+            ctx.moveTo(0, 0);
+            for (let i = 0; i < 360; i++) {
+                const angle = i * Math.PI / 180;
+                const heartX = 16 * Math.pow(Math.sin(angle), 3);
+                const heartY = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
+                if (i === 0) {
+                    ctx.moveTo(heartX, heartY);
+                } else {
+                    ctx.lineTo(heartX, heartY);
+                }
+            }
+            
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        // Initialize heart drawing
+        window.addEventListener('load', drawHearts);
+        window.addEventListener('resize', function() {
+            const canvas = document.getElementById('turtleCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawHearts();
+        });
+
+        // COMPLETE SONGS DATA WITH SPOTIFY EMBED LINKS
+        const songs = [
+            { 
+                title: "Beg For It", 
+                artist: "Chris Brown", 
+                description: "A smooth R&B track that makes me think of those moments when I'd do anything just to see you smile, Xie.",
+                image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/14wX82C9nSI4WqFMLiP9X1?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/14wX82C9nSI4WqFMLiP9X1"
+            },
+            { 
+                title: "Just the Way You Are", 
+                artist: "Bruno Mars", 
+                description: "This song perfectly describes how I see you, Xie - absolutely perfect in every single way.",
+                image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/7BqBn9nzAq8spo5e7cZ0dJ?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/7BqBn9nzAq8spo5e7cZ0dJ"
+            },
+            { 
+                title: "Photograph", 
+                artist: "Ed Sheeran", 
+                description: "Reminds me of all the memories we've captured together and the ones we're yet to make, Xie.",
+                image: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/6fxVffaTuwjgEk5h9QyRjy?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/6fxVffaTuwjgEk5h9QyRjy"
+            },
+            { 
+                title: "Thinking out Loud", 
+                artist: "Ed Sheeran", 
+                description: "Makes me imagine growing old with you, Xie, and loving you the same way even when we're 70.",
+                image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/34gCuhDGsG4bRPIf9bb02f?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/34gCuhDGsG4bRPIf9bb02f"
+            },
+            { 
+                title: "Best Part", 
+                artist: "Daniel Caesar, H.E.R.", 
+                description: "You're definitely the best part of my day, every single day, Xie.",
+                image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/1RMJOxR6GRPsBHL8qeC2ux?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/1RMJOxR6GRPsBHL8qeC2ux"
+            },
+            { 
+                title: "Kung Wala Ka", 
+                artist: "Hale", 
+                description: "This OPM classic hits different now because I can't imagine my world without you in it, Xie.",
+                image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/5Fe3Dn2Mb7q0YCp2tY6d3j?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/5Fe3Dn2Mb7q0YCp2tY6d3j"
+            },
+            { 
+                title: "Sofia", 
+                artist: "Clairo", 
+                description: "That indie vibe that reminds me of our lazy Sundays and quiet moments together, Xie.",
+                image: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/7B3z0ySL9Rr0XvZEAjWZzM?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/7B3z0ySL9Rr0XvZEAjWZzM"
+            },
+            { 
+                title: "BAE", 
+                artist: "HELLMERRY", 
+                description: "Local vibes that make me proud to call you mine, my forever BAE, Xie.",
+                image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/3YStA9WqU9kfR5S9T6K2hI?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/3YStA9WqU9kfR5S9T6K2hI"
+            },
+            { 
+                title: "Tequila Rose", 
+                artist: "HELLMERRY x AI James", 
+                description: "Makes me think of our fun nights out and the way you light up any room, Xie.",
+                image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/5TzwofilGXqL6nDt5m9YT4?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/5TzwofilGXqL6nDt5m9YT4"
+            },
+            { 
+                title: "My Day", 
+                artist: "HELLMERRY", 
+                description: "You're the first thing I think about when I wake up and the last before I sleep, Xie.",
+                image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/6b2CVYKA1hHZSV5rDF1g6M?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/6b2CVYKA1hHZSV5rDF1g6M"
+            },
+            { 
+                title: "4:AM", 
+                artist: "HELLMERRY", 
+                description: "For all those late nights we spent talking until the sun came up, Xie.",
+                image: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/6SJQJXOOQ0hY7rBN9XHP9K?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/6SJQJXOOQ0hY7rBN9XHP9K"
+            },
+            { 
+                title: "Sana Tumawag", 
+                artist: "Sica", 
+                description: "That feeling when I'm just waiting for my phone to light up with your name, Xie.",
+                image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/5U7w4O9Q7dA3zF3qj7Y8kY?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/5U7w4O9Q7dA3zF3qj7Y8kY"
+            },
+            { 
+                title: "PALAISIPAN", 
+                artist: "Loonie feat. Arthur Nery", 
+                description: "You're the beautiful mystery I'll never get tired of figuring out, Xie.",
+                image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/6J9lO7LX0j3QnK5d7KQhQr?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/6J9lO7LX0j3QnK5d7KQhQr"
+            },
+            { 
+                title: "Harana", 
+                artist: "Parokya Ni Edgar", 
+                description: "The classic Pinoy love song that makes me want to sing for you under your window, Xie.",
+                image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/5rF2DuWc7TzB2dY9DgQyLQ?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/5rF2DuWc7TzB2dY9DgQyLQ"
+            },
+            { 
+                title: "Sunday Morning", 
+                artist: "Maroon 5", 
+                description: "Perfect for those lazy mornings we spend cuddled up with nowhere to be, Xie.",
+                image: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/4YDkFtXCfGvS5CnF1D7Bqi?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/4YDkFtXCfGvS5CnF1D7Bqi"
+            },
+            { 
+                title: "Superpowers", 
+                artist: "Daniel Caesar", 
+                description: "Being with you makes me feel like I can do anything - you're my superpower, Xie.",
+                image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face",
+                spotifyEmbedUrl: "https://open.spotify.com/embed/track/0i1p8cMjBdR1Lh7xM0x9V6?utm_source=generator",
+                spotifyUrl: "https://open.spotify.com/track/0i1p8cMjBdR1Lh7xM0x9V6"
+            }
+        ];
+
+        // Cake click handler
+        document.getElementById('cakeSection').addEventListener('click', function() {
+            this.style.opacity = '0';
+            this.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            
+            setTimeout(() => {
+                this.style.display = 'none';
+            }, 500);
+            
+            const musicSection = document.getElementById('musicSection');
+            musicSection.classList.add('visible');
+            
+            generateMusicCards();
+            playCelebration();
+            createFloatingHearts();
+        });
+
+        function generateMusicCards() {
+            const row1 = document.getElementById('row1');
+            const row2 = document.getElementById('row2');
+            const row3 = document.getElementById('row3');
+            const row4 = document.getElementById('row4');
+
+            row1.innerHTML = '';
+            row2.innerHTML = '';
+            row3.innerHTML = '';
+            row4.innerHTML = '';
+
+            // FIXED: Duplicate songs enough times for proper infinite loop
+            const manySongs = duplicateSongsForMarquee(6); // 6 duplicates = 96 total cards
+
+            manySongs.forEach((song, index) => {
+                const card = createMusicCard(song);
+                if (index % 4 === 0) row1.appendChild(card);
+                else if (index % 4 === 1) row2.appendChild(card);
+                else if (index % 4 === 2) row3.appendChild(card);
+                else row4.appendChild(card);
+            });
+
+            restartMarqueeAnimations();
+        }
+
+        function duplicateSongsForMarquee(times) {
+            const duplicated = [];
+            for (let i = 0; i < times; i++) {
+                duplicated.push(...songs.map(song => ({
+                    ...song,
+                    title: `${song.title}`
+                })));
+            }
+            return duplicated;
+        }
+
+        function restartMarqueeAnimations() {
+            const containers = document.querySelectorAll('.cards-container');
+            containers.forEach(container => {
+                container.style.animation = 'none';
+                void container.offsetWidth;
+                container.style.animation = '';
+            });
+        }
+
+        function createMusicCard(song) {
+            const card = document.createElement('div');
+            card.className = 'music-card';
+            card.innerHTML = `
+                <div class="card-content">
+                    <div class="song-description">
+                        ${song.description}
+                    </div>
+                </div>
+                <div class="card-footer" onclick="openSpotifyPlayer('${song.title}', '${song.artist}', '${song.image}', '${song.spotifyEmbedUrl}', '${song.spotifyUrl}')">
+                    <img src="${song.image}" alt="${song.artist}" class="artist-image">
+                    <div class="song-info">
+                        <div class="artist-name">${song.artist}</div>
+                        <div class="song-title">${song.title}</div>
+                    </div>
+                    <div class="play-icon" onclick="event.stopPropagation(); openSpotifyPlayer('${song.title}', '${song.artist}', '${song.image}', '${song.spotifyEmbedUrl}', '${song.spotifyUrl}')">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Spotify Player Functions
+        function openSpotifyPlayer(title, artist, image, embedUrl, spotifyUrl) {
+            const modal = document.getElementById('spotifyModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalArtist = document.getElementById('modalArtist');
+            const modalCover = document.getElementById('modalCover');
+            const spotifyEmbed = document.getElementById('spotifyEmbed');
+            const openInSpotifyBtn = document.getElementById('openInSpotify');
+            
+            modalTitle.textContent = title;
+            modalArtist.textContent = artist;
+            modalCover.src = image;
+            
+            // Create Spotify embed iframe
+            spotifyEmbed.innerHTML = `<iframe src="${embedUrl}" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+            
+            // Set up the "Open in Spotify" button
+            openInSpotifyBtn.onclick = function() {
+                window.open(spotifyUrl, '_blank');
+            };
+            
+            modal.classList.add('active');
+        }
+
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('spotifyModal').classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('spotifyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        function playCelebration() {
+            const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav');
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        }
+
+        function createFloatingHearts() {
+            const canvas = document.getElementById('floatingHeartsCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const floatingHearts = [];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const size = Math.random() * 40 + 20;
+                    const x = Math.random() * canvas.width;
+                    const y = canvas.height + 50;
+                    const color = ['#FF9999', '#FFCCCC', '#FFE6E6', '#FF99CC', '#FFCCFF', '#FF6666'][Math.floor(Math.random() * 6)];
+                    const speed = 1 + Math.random() * 2;
+                    const sway = Math.random() * 3 - 1.5;
+                    
+                    floatingHearts.push({ x, y, size, color, speed, sway, startX: x });
+                }, i * 300);
+            }
+            
+            function animateFloatingHearts() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                let allHeartsGone = true;
+                
+                floatingHearts.forEach((heart, index) => {
+                    if (heart.y > -50) {
+                        allHeartsGone = false;
+                        heart.y -= heart.speed;
+                        heart.x = heart.startX + Math.sin(heart.y * 0.02) * heart.sway;
+                        
+                        drawHeart(ctx, heart.x, heart.y, heart.size, heart.color, 0.8);
+                    }
+                });
+                
+                if (!allHeartsGone) {
+                    requestAnimationFrame(animateFloatingHearts);
+                }
+            }
+            
+            animateFloatingHearts();
+        }
+
+        // Console love message
+        console.log(`%c
+        💝 For Xie 💝
+        Happy Birthday my love!
+        You mean everything to me! 💖
+        `, 'color: #e91e63; font-size: 16px; font-weight: bold;');
+    </script>
+</body>
+</html>
